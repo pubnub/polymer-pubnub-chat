@@ -34,25 +34,30 @@
     <script>
         Polymer( 'pubnub-chat', {
             ready : function() {
-                var   self = this
-                ,   pubnub = self.pubnub = PUBNUB({
+                var pubnub = PUBNUB({
                       publish_key : this['publish-key'],
                     subscribe_key : this['subscribe-key']
                 });
 
-                setup_chat(self);
+                pubnub.settings = {
+                        box : this.$.box,
+                      input : this.$.input,
+                      focus : this['auto-focus'],
+                    channel : this['chat-room']
+                };
+
+                setup_chat(pubnub);
             }
         } );
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         // Setup Chat
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-        function setup_chat(self) {
-            var     box = self.$.box
-            ,     input = self.$.input
-            ,    pubnub = self.pubnub
-            , autofocus = self['auto-focus']
-            ,   channel = self['chat-room'];
+        function setup_chat(pubnub) {
+            var     box = pubnub.settings.box
+            ,     input = pubnub.settings.input
+            , autofocus = pubnub.settings.focus
+            ,   channel = pubnub.settings.channel;
 
             // Auto Focus Input
             if (autofocus) input.focus();
@@ -62,14 +67,26 @@
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             pubnub.subscribe({
                 channel : channel,
-                message : function(text) {
-                    box.innerHTML = (''+text).replace( /[<>]/g, '' ) +
-                    '<br>' + box.innerHTML
-                },
-                connect : function() {
-                    send('Joined Chat!');
-                }
+                message : receive,
+                connect : function() { send('Joined Chat!') }
             });
+
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            // History
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            pubnub.history({
+                limit    : 100,
+                channel  : channel,
+                callback : function(msgs) { pubnub.each( msgs[0], receive ) }
+            });
+
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            // Receive Event
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            function receive(text) {
+                box.innerHTML = (''+text).replace( /[<>]/g, '' ) +
+                '<br>' + box.innerHTML
+            }
 
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             // Send Event
@@ -89,6 +106,7 @@
                 send(input.value);
                 input.value = '';
             } );
+
         }
     </script>
 
