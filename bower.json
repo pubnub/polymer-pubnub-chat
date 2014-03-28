@@ -1,0 +1,20 @@
+{
+  "name": "pubnub-polymer",
+  "version": "0.0.0",
+  "authors": [
+    "Stephen Blum stephen@pubnub.com"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "www.pubnub.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~0.2.1"
+  }
+}
