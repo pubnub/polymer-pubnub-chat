@@ -66,10 +66,17 @@
             // Open TCP Socket for Chat Messages
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             pubnub.subscribe({
-                channel : channel,
-                message : receive,
-                connect : function() { send('Joined Chat!') }
+                 channel : channel,
+                 message : receive,
+                presence : presence
             });
+
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            // Presence
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            function presence(data) {
+                receive(pubnub.supplant( 'User {action}: {uuid}', data ));
+            }
 
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             // History
