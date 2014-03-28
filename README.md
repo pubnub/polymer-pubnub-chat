@@ -15,6 +15,7 @@
     <pubnub-chat
           publish-key="demo"
         subscribe-key="demo"
+             presence="User {action}: {uuid}"
             chat-room="seahorse-flavor"
            auto-focus="true"
     ></pubnub-chat>

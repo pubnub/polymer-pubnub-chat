@@ -2,7 +2,7 @@
 
 <polymer-element
     constructor="PubNubChat"
-     attributes="publish-key subscribe-key chat-room auto-focus"
+     attributes="publish-key subscribe-key chat-room auto-focus presence"
            name="pubnub-chat">
 
     <template>
@@ -39,12 +39,19 @@
                     subscribe_key : this['subscribe-key']
                 });
 
+                // Settings
                 pubnub.settings = {
-                        box : this.$.box,
-                      input : this.$.input,
-                      focus : this['auto-focus'],
-                    channel : this['chat-room']
+                         box : this.$.box,
+                       input : this.$.input,
+                    presence : this['presence'],
+                       focus : this['auto-focus'],
+                     channel : this['chat-room']
                 };
+
+                console.log(pubnub.settings);
+                console.log(pubnub.settings);
+                console.log(pubnub.settings);
+                console.log(pubnub.settings);
 
                 setup_chat(pubnub);
             }
@@ -75,7 +82,10 @@
             // Presence
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             function presence(data) {
-                receive(pubnub.supplant( 'User {action}: {uuid}', data ));
+                receive(pubnub.supplant(
+                    pubnub.settings.presence || 'User {action}: {uuid}',
+                    data
+                ));
             }
 
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
