@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="web-animations-js/web-animations.js"></script> 
 
 <polymer-element
     constructor="PubNubChat"
@@ -48,11 +49,6 @@
                      channel : this['chat-room']
                 };
 
-                console.log(pubnub.settings);
-                console.log(pubnub.settings);
-                console.log(pubnub.settings);
-                console.log(pubnub.settings);
-
                 setup_chat(pubnub);
             }
         } );
@@ -92,9 +88,11 @@
             // History
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             pubnub.history({
-                limit    : 100,
-                channel  : channel,
-                callback : function(msgs) { pubnub.each( msgs[0], receive ) }
+                   limit : 100,
+                 channel : channel,
+                callback : function(msgs) {
+                    pubnub.each( msgs[0], receive );
+                }
             });
 
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -102,7 +100,10 @@
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             function receive(text) {
                 box.innerHTML = (''+text).replace( /[<>]/g, '' ) +
-                '<br>' + box.innerHTML
+                '<br>' + box.innerHTML;
+                var animation = new Animation( box.firstChild, {
+                    "transform" : "translate(100px,100px)"
+                }, 2 );
             }
 
             // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
